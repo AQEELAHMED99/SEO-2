@@ -9,6 +9,8 @@ import {
 } from 'lucide-react';
 import './styles.css';
 
+const configuredApiKey = import.meta.env.VITE_PAGESPEED_API_KEY || '';
+
 const sample = {
   url: 'https://northstarstudio.com',
   mobile: { score: 78, metrics: { lcp: '2.6 s', fcp: '1.3 s', cls: '0.04', tbt: '180 ms', si: '3.1 s', tti: '4.2 s' } },
@@ -175,7 +177,7 @@ function AuditGroup({ group }) {
 
 function App() {
   const [url, setUrl] = useState(sample.url);
-  const [apiKey, setApiKey] = useState('');
+  const [apiKey, setApiKey] = useState(configuredApiKey);
   const [showKey, setShowKey] = useState(false);
   const [isRunning, setIsRunning] = useState(false);
   const [report, setReport] = useState({ mobile: sample.mobile, desktop: sample.desktop, categories: sample.categories, preview: true, url: sample.url });
@@ -274,7 +276,7 @@ function App() {
         <div className="search-foot"><span className="search-foot-note"><LockKeyhole size={13} /> Your URL is only used to request a PageSpeed report.</span>
           <button className="key-toggle" onClick={() => setShowKey(!showKey)}><Settings2 size={14} /> {apiKey ? 'API key added' : 'API key'} {showKey ? <ChevronUp size={13} /> : <ChevronDown size={13} />}</button>
         </div>
-        {showKey && <div className="key-panel"><div><strong>Google PageSpeed Insights API key</strong><span>Create a key in Google Cloud and enable the PageSpeed Insights API. It stays in this tab only.</span></div><input aria-label="Google API key" type="password" autoComplete="off" value={apiKey} onChange={(e) => setApiKey(e.target.value)} placeholder="Paste API key" /><a href="https://developers.google.com/speed/docs/insights/v5/get-started" target="_blank" rel="noreferrer">Setup guide <ExternalLink size={12} /></a></div>}
+        {showKey && <div className="key-panel"><div><strong>Google PageSpeed Insights API key</strong><span>{configuredApiKey && apiKey === configuredApiKey ? 'Loaded from VITE_PAGESPEED_API_KEY. Restrict it to the PageSpeed Insights API and your website referrers in Google Cloud.' : 'Create a key in Google Cloud and enable the PageSpeed Insights API. A key entered here stays in this tab only.'}</span></div><input aria-label="Google API key" type="password" autoComplete="off" value={apiKey} onChange={(e) => setApiKey(e.target.value)} placeholder="Paste API key" /><a href="https://developers.google.com/speed/docs/insights/v5/get-started" target="_blank" rel="noreferrer">Setup guide <ExternalLink size={12} /></a></div>}
         {error && <div className="error-message"><CircleAlert size={17} /><span>{error}</span><button onClick={() => setShowKey(true)}>API settings <ArrowRight size={14} /></button></div>}
       </section>
 
